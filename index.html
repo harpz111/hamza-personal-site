@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamza H — Aerospace, CFD & Numerical Methods</title>
+
+<!-- MathJax lets the LaTeX equations render on the website. -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$']]
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<style>
+/* =========================================================
+   HAMZA H WEBSITE
+   Old-school, content-first, Cats2D-inspired static site
+
+   BEGINNER EDITING GUIDE
+
+   Your folder should look like this:
+
+   hamza-website/
+   ├── index.html
+   └── images/
+       ├── easytunnel-symbol-text.png
+       ├── sidebar-cfd.png
+       ├── cfd_scheme_comparison.mp4
+       ├── Re5e6-ezgif.com-video-speed.mp4
+       ├── Re40-ezgif.com-video-speed.mp4
+       ├── Re100-ezgif.com-video-speed.mp4
+       ├── Re600-ezgif.com-video-speed.mp4
+       ├── energy_fft_video.mp4
+       ├── figure_5_method_energy_comparison.png
+       └── figure_fft_energy_error.png
+
+   IMPORTANT IMAGE/VIDEO RULE:
+   The file name in HTML must match the real file name exactly.
+   If Windows hides extensions, a file shown as example may really be example.png or example.mp4.
+
+   TO ADD A NEW NUMERICAL PROJECT:
+   Search for: NUMERICAL PROJECT TEMPLATE
+
+   TO ADD A NEW BLOG POST:
+   Search for: BLOG POST TEMPLATE
+
+   TO MAKE A PAGE USE THE PLAIN ARTICLE LAYOUT:
+   Add plain-layout to the page class:
+   <section id="page-example" class="page plain-layout">
+   ========================================================= */
+
+:root {
+  --page-bg: #087196;
+  --header-bg: #05005f;
+  --header-text: #f0e68c;
+  --sidebar-bg: #ffff99;
+  --sidebar-border: #d2c85a;
+  --link-blue: #0000aa;
+  --link-hover: #8b0000;
+  --main-border: #222;
+  --body-text: #000;
+  --content-bg: #fff;
+  --site-width: 900px;
+  --sidebar-width: 175px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--page-bg);
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: var(--body-text);
+  line-height: 1.45;
+  padding: 12px;
+}
+
+/* Article pages: used by Blog and Research. No blue title bar, no sidebar. */
+body.plain-page {
+  padding-top: 22px;
+}
+
+body.plain-page #site {
+  max-width: 850px;
+  border: none;
+}
+
+body.plain-page #header,
+body.plain-page #sidebar,
+body.plain-page #footer-nav {
+  display: none;
+}
+
+body.plain-page #body-row {
+  display: block;
+}
+
+body.plain-page #content {
+  padding: 14px 36px 44px;
+  min-height: 900px;
+}
+
+body.plain-page .breadcrumb {
+  margin-bottom: 18px;
+}
+
+#site {
+  max-width: var(--site-width);
+  margin: 0 auto;
+  border: 1px solid var(--main-border);
+  background: var(--content-bg);
+}
+
+#header {
+  background: var(--header-bg);
+  text-align: center;
+  padding: 15px 20px 14px;
+  border-bottom: 1px solid var(--main-border);
+}
+
+#header h1 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 1.65rem;
+  color: var(--header-text);
+  font-weight: normal;
+}
+
+#body-row {
+  display: flex;
+  align-items: stretch;
+}
+
+#sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  padding: 16px 13px;
+}
+
+#sidebar strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+#sidebar ul {
+  list-style: disc;
+  margin-left: 16px;
+  margin-bottom: 18px;
+}
+
+#sidebar li {
+  margin: 2px 0;
+  line-height: 1.2;
+}
+
+#sidebar a {
+  color: var(--link-blue);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+#sidebar a:hover {
+  text-decoration: underline;
+}
+
+.sidebar-logo {
+  margin: 18px 0 16px;
+  text-align: center;
+}
+
+.sidebar-logo img {
+  max-width: 140px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.sidebar-img {
+  margin-top: 20px;
+  border: 1px solid var(--sidebar-border);
+  background: #fff;
+  padding: 5px;
+}
+
+.sidebar-img img,
+.sidebar-img svg {
+  width: 100%;
+  height: 130px;
+  display: block;
+  object-fit: cover;
+}
+
+.sidebar-caption {
+  font-size: 0.75rem;
+  color: #333;
+  margin-top: 5px;
+  line-height: 1.25;
+}
+
+#content {
+  flex: 1;
+  background: var(--content-bg);
+  padding: 18px 22px 24px;
+  min-width: 0;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.breadcrumb {
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.breadcrumb a {
+  color: var(--link-blue);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 13px;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 18px 0 7px;
+}
+
+h4 {
+  font-size: 0.92rem;
+  font-weight: bold;
+  margin: 12px 0 5px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+ul, ol {
+  margin-left: 19px;
+  margin-bottom: 11px;
+}
+
+li {
+  margin-bottom: 3px;
+}
+
+a {
+  color: var(--link-blue);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+}
+
+pre {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 9px 10px;
+  overflow-x: auto;
+  margin: 10px 0 14px;
+  font-size: 0.82rem;
+}
+
+.note {
+  font-style: italic;
+}
+
+.small {
+  font-size: 0.86rem;
+}
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
+}
+
+.project {
+  margin-bottom: 28px;
+}
+
+.project-title {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.project-meta {
+  font-style: italic;
+  color: #555;
+  font-size: 0.84rem;
+  margin-bottom: 7px;
+}
+
+.tags {
+  font-family: 'Courier New', Courier, monospace;
+  color: #444;
+  font-size: 0.79rem;
+  margin-bottom: 8px;
+}
+
+.media-wide {
+  width: 100%;
+  max-width: 650px;
+  display: block;
+  margin: 10px auto 12px;
+  border: 1px solid #bbb;
+  background: #fff;
+}
+
+.media-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 10px 0 14px;
+}
+
+.media-card {
+  border: 1px solid #ccc;
+  padding: 6px;
+  background: #fafafa;
+}
+
+.media-card.wide {
+  grid-column: 1 / -1;
+}
+
+.media-card.wide video {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  background: #000;
+}
+
+.media-card video,
+.media-card img {
+  width: 100%;
+  display: block;
+  border: 1px solid #ddd;
+  background: #000;
+}
+
+.media-caption {
+  font-size: 0.78rem;
+  color: #444;
+  margin-top: 5px;
+  line-height: 1.25;
+}
+
+img.media-wide {
+  background: #fff;
+  object-fit: contain;
+}
+
+.eq-box {
+  background: #f7f7df;
+  border: 1px solid #d8d0a0;
+  padding: 9px 11px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+}
+
+.blog-post {
+  margin-bottom: 22px;
+}
+
+.blog-date {
+  font-style: italic;
+  color: #555;
+  font-size: 0.83rem;
+  margin-bottom: 7px;
+}
+
+.reading-list li {
+  margin-bottom: 8px;
+}
+
+.edit-note {
+  background: #f5f5f5;
+  border: 1px dotted #999;
+  padding: 8px 10px;
+  margin: 10px 0 14px;
+  font-size: 0.84rem;
+  color: #333;
+}
+
+.logo-main {
+  text-align: center;
+  margin: 8px 0 16px;
+}
+
+.logo-main img {
+  max-width: 260px;
+  width: 70%;
+  height: auto;
+}
+
+#footer-nav {
+  background: var(--header-bg);
+  border-top: 1px solid var(--main-border);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#footer-nav button {
+  background: none;
+  border: none;
+  border-right: 1px solid #24247c;
+  color: #fff;
+  font-family: Georgia, serif;
+  font-size: 0.9rem;
+  padding: 7px 18px;
+  cursor: pointer;
+}
+
+#footer-nav button:last-child {
+  border-right: none;
+}
+
+#footer-nav button:hover {
+  text-decoration: underline;
+}
+
+#footer-nav button.active-nav {
+  color: var(--header-text);
+}
+
+@media (max-width: 760px) {
+  body {
+    padding: 8px;
+  }
+
+  #site {
+    max-width: 100%;
+  }
+
+  #body-row {
+    display: block;
+  }
+
+  #sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  #sidebar ul {
+    columns: 2;
+  }
+
+  .sidebar-img {
+    display: none;
+  }
+
+  #content,
+  body.plain-page #content {
+    padding: 16px;
+  }
+
+  .media-row {
+    grid-template-columns: 1fr;
+  }
+
+  #footer-nav button {
+    padding: 7px 10px;
+    font-size: 0.85rem;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="site">
+
+  <div id="header">
+    <h1>Hamza H — Aerospace Engineering &amp; CFD</h1>
+  </div>
+
+  <div id="body-row">
+
+    <div id="sidebar">
+      <strong>About Hamza</strong>
+      <ul>
+        <li><a href="#contact" onclick="showPage('contact'); return false;">Contact</a></li>
+        <li><a href="#numerical" onclick="showPage('numerical'); return false;">Numerical Progress</a></li>
+        <li><a href="#research" onclick="showPage('research'); return false;">Research</a></li>
+        <li><a href="#reading" onclick="showPage('reading'); return false;">Reading List</a></li>
+        <li><a href="#blog" onclick="showPage('blog'); return false;">Blog</a></li>
+      </ul>
+
+      <!-- EASYTUNNEL LOGO ONLY
+           PNG is completely fine. You do not need SVG.
+           If your file is called easytunnel-symbol-text.png, this should work:
+      -->
+      <div class="sidebar-logo">
+        <a href="#easytunnel-theory" onclick="showPage('easytunnel-theory'); return false;">
+          <img src="images/easytunnel-symbol-text.png" alt="EasyTunnel logo">
+        </a>
+      </div>
+
+
+    </div>
+
+    <div id="content">
+
+      <section id="page-contact" class="page active">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; Contact</div>
+        <h2>Contact</h2>
+        <p><strong>Hamza H</strong></p>
+        <p>Aerospace engineering graduate interested in computational fluid dynamics, numerical methods, fluid mechanics, and engineering software.</p>
+        <p>Email: <a href="mailto:hamza78624@icloud.com">hamza78624@icloud.com</a></p>
+<p>I will strive to reply within a day.</p>
+        <p>This website is a compact record of my numerical solvers, engineering tools, research notes, plots, and development logs.</p>
+      </section>
+
+      <section id="page-overview" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; Overview</div>
+        <h2>Overview</h2>
+        <p>This site is a working notebook for my aerospace and numerical-methods projects. I use it to record what I have built, what failed, what improved, and what each result taught me. The focus is not glossy presentation; it is the technical path from simple schemes to more realistic flow problems.</p>
+        <p>My current work is centred on self-written solvers. I have been building finite-difference models for 1D advection, 2D wave propagation, and incompressible Navier-Stokes flow. The aim is to understand the numerical behaviour directly: stability limits, numerical viscosity, dispersion, boundary-condition sensitivity, pressure projection, and energy conservation.</p>
+        <p>The main numerical project at the moment is a 2D incompressible flow solver for flow past a square cylinder. It uses a Chorin-style pressure projection, central differences for pressure and diffusion, adaptive time stepping, and directional upwinding for the convective terms. The page records both the result and the reasoning behind the method.</p>
+        <p>I also develop <em>EasyTunnel</em>, a study tool for preliminary sizing of low-speed open-circuit wind tunnels. It links test-section conditions, area ratios, pressure losses, and estimated power into one transparent calculator.</p>
+
+        <h3>Current interests</h3>
+        <ul>
+          <li>Projection methods for incompressible Navier-Stokes</li>
+          <li>Vortex shedding, wake formation, and bluff-body flow</li>
+          <li>Directional upwinding, modified equations, and numerical viscosity</li>
+          <li>2D wave-equation solvers, energy conservation, and Lax-Wendroff-style corrections</li>
+          <li>Numerical dispersion and dissipation in finite-difference schemes</li>
+          <li>Simple engineering tools for early-stage aerodynamic design</li>
+        </ul>
+      </section>
+
+      <!-- =====================================================
+           NUMERICAL PROGRESS PAGE
+
+           To add a new project:
+           1. Copy the block between NUMERICAL PROJECT TEMPLATE START/END.
+           2. Paste it under the existing projects.
+           3. Change the title, media file names, and paragraphs.
+           ===================================================== -->
+      <section id="page-numerical" class="page plain-layout">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; Numerical Progress</div>
+        <h2>Numerical Progress</h2>
+        <p>This page collects the numerical work I have been building from scratch: incompressible flow over a square cylinder, wave-equation energy studies, and scheme comparisons for advection and wave propagation.</p>
+
+
+        <hr class="divider">
+
+        <div class="project">
+          <div class="project-title">2D incompressible flow over a square cylinder</div>
+          <div class="project-meta">Finite-difference Chorin projection method with adaptive time stepping and second-order directional upwinding</div>
+          <p>This solver models flow past a square cylinder using a pressure-projection method. The velocity field is advanced explicitly, the pressure Poisson equation is solved to enforce incompressibility, and the velocity is corrected so that the flow remains approximately divergence-free.</p>
+          <p>The convective terms use a second-order directional upwind stencil. The direction is chosen locally from the sign of the velocity, so the derivative uses information from the upstream side of the flow. Diffusion and pressure gradients are treated with second-order central differences. The time integration is an explicit forward-Euler update for the momentum predictor, with adaptive time stepping based on advective and viscous stability limits.</p>
+          <p class="tags">Python · NumPy · Matplotlib · Chorin projection · second-order upwind · central differences · adaptive time step</p>
+
+          <h3>Grid spacing, numerical viscosity, and why the stencil had to improve</h3>
+          <p>Before introducing the three-point upwind stencil, it is worth showing why the grid spacing matters so much. In the first-order version of the solver, the artificial diffusion from the upwind discretisation could dominate the flow field. On a coarse grid, the wake was heavily damped: instead of a clear cyclic vortex-shedding pattern, the solution looked more laminar and smeared out.</p>
+          <p>When the grid was refined, the wake structure became much more convincing. Periodic vortices became visible behind the square cylinder, showing that the physical instability was no longer being suppressed as strongly by the numerical method. This is the key point: decreasing <code>dx</code> reduces the artificial viscosity introduced by the scheme.</p>
+
+          <div class="media-row">
+            <div class="media-card">
+  <video controls preload="metadata" muted playsinline>
+    <source src="images/Re600_long_domain_web.mp4" type="video/mp4">
+    Your browser does not support this video.
+  </video>
+  <div class="media-caption">Nominal Re = 600 case on the earlier/coarser setup. The wake is strongly damped, so numerical diffusion dominates the behaviour.</div>
+</div>
+
+<div class="media-card">
+  <video controls preload="metadata" muted playsinline>
+    <source src="images/Re600_finer_grid_web.mp4" type="video/mp4">
+    Your browser does not support this video.
+  </video>
+  <div class="media-caption">Nominal Re = 600 case on a finer grid. The periodic vortex structure is much clearer.</div>
+</div>
+          </div>
+
+          <p>However, there is still a problem. Even if the input Reynolds number is set to 600, the calculation is not necessarily behaving like a true Re = 600 flow if the numerical viscosity is large. For a first-order upwind scheme, the leading artificial viscosity scales like</p>
+
+          <div class="eq-box">
+            $$
+            &#92;nu_{&#92;text{num}}&#92;approx &#92;frac{1}{2}U&#92;Delta x
+            $$
+          </div>
+
+          <p>The effective Reynolds number is therefore closer to</p>
+
+          <div class="eq-box">
+            $$
+            Re_{&#92;text{eff}}=&#92;frac{UL}{&#92;nu+&#92;nu_{&#92;text{num}}}
+            =&#92;frac{UL}{&#92;nu+&#92;frac{1}{2}U&#92;Delta x}
+            $$
+          </div>
+
+          <p>At sufficiently large velocity, the numerical viscosity can become much larger than the physical viscosity. In that limit,</p>
+
+          <div class="eq-box">
+            $$
+            Re_{&#92;text{eff}}&#92;approx &#92;frac{UL}{&#92;frac{1}{2}U&#92;Delta x}
+            =&#92;frac{L}{&#92;frac{1}{2}&#92;Delta x}
+            $$
+          </div>
+
+          <p>The velocity cancels. This means that increasing the inlet velocity no longer increases the effective Reynolds number in the way I intended. The scheme and grid spacing impose an upper limit. In one of these cases, the nominal Reynolds number may be 600, but the effective Reynolds number is closer to a much lower value, around 35, because the artificial viscosity is doing so much damping.</p>
+
+          <p>This is why I implemented a second-order upwind scheme using a three-point stencil for the advection term. The aim was to remove as much of the first-order numerical dissipation as possible. The trade-off is that lower dissipation can expose dispersive behaviour, but so far this has been controlled by using a sufficiently low CFL number.</p>
+
+          <div class="eq-box">
+            $$
+            \frac{\partial u}{\partial t}
+            + u\frac{\partial u}{\partial x}
+            + v\frac{\partial u}{\partial y}
+            = -\frac{1}{\rho}\frac{\partial p}{\partial x}
+            + \nu\left(\frac{\partial^2 u}{\partial x^2}
+            + \frac{\partial^2 u}{\partial y^2}\right)
+            $$
+            $$
+            \frac{\partial v}{\partial t}
+            + u\frac{\partial v}{\partial x}
+            + v\frac{\partial v}{\partial y}
+            = -\frac{1}{\rho}\frac{\partial p}{\partial y}
+            + \nu\left(\frac{\partial^2 v}{\partial x^2}
+            + \frac{\partial^2 v}{\partial y^2}\right)
+            $$
+            $$
+            \nabla \cdot \mathbf{u} = 0
+            $$
+          </div>
+
+          <h3>Why divergence matters</h3>
+          <p>A useful way to understand the incompressibility condition is through the volume of a moving fluid parcel. Consider a small moving control volume with fixed mass. Over a small time step, only the normal component of velocity through the surface changes the volume.</p>
+          <div class="eq-box">
+            <p><code>change in parcel volume over dt = integral over surface of (V · n) dS dt</code></p>
+            <p><code>D(delta V)/Dt = integral over surface of V · dS</code></p>
+          </div>
+          <p>Using the divergence theorem, the surface flux can be written as a volume integral. If the small volume is shrunk down to a fluid element, this gives</p>
+          <div class="eq-box">
+            <p><code>div(V) = (1 / delta V) D(delta V)/Dt</code></p>
+          </div>
+          <p>So <code>div(V)</code> is the fractional rate of change of the volume of a fluid element. For an incompressible flow, the parcel volume should not expand or shrink, so</p>
+          <div class="eq-box">
+            <p><code>D(delta V)/Dt = 0</code></p>
+            <p><code>div(V) = 0</code></p>
+          </div>
+
+          <h3>How I understand Chorin projection</h3>
+          <p>The pressure term is what connects the momentum equation to the continuity constraint. If I advance the momentum equation without pressure, I get an intermediate velocity field, usually written as <code>V*</code>. This field contains the advection and diffusion effects, but it is not guaranteed to satisfy <code>div(V*) = 0</code>.</p>
+          <p>The pressure gradient is then used as a velocity correction. The factor <code>dt/rho grad(p)</code> has the units of velocity, so it makes sense to read the projection step as subtracting a pressure-generated velocity correction from the predicted field.</p>
+          <div class="eq-box">
+            <p><code>V* = V^n + dt [nu grad^2(V^n) - (V^n · grad)V^n]</code></p>
+            <p><code>V^(n+1) = V* - (dt/rho) grad(p^(n+1))</code></p>
+          </div>
+          <p>The corrected velocity must satisfy incompressibility:</p>
+          <div class="eq-box">
+            <p><code>div(V^(n+1)) = 0</code></p>
+          </div>
+          <p>Taking the divergence of the correction equation gives the pressure Poisson equation:</p>
+          <div class="eq-box">
+            <p><code>0 = div(V*) - (dt/rho) grad^2(p^(n+1))</code></p>
+            <p><code>grad^2(p^(n+1)) = (rho/dt) div(V*)</code></p>
+          </div>
+          <p>This is the core of the projection method. First compute the velocity that the momentum equation wants, then solve for the pressure field required to remove its divergence. The pressure is not just another plotted variable here. It acts like the constraint force that makes the velocity field compatible with incompressibility.</p>
+
+          <p>The directional upwind derivative uses a backward stencil when the local velocity is positive, and a forward stencil when the local velocity is negative:</p>
+          <div class="eq-box">
+            $$
+            \left.\frac{\partial f}{\partial x}\right|_{i}^{-}
+            \approx \frac{3f_i - 4f_{i-1} + f_{i-2}}{2\Delta x}
+            $$
+            $$
+            \left.\frac{\partial f}{\partial x}\right|_{i}^{+}
+            \approx \frac{-3f_i + 4f_{i+1} - f_{i+2}}{2\Delta x}
+            $$
+          </div>
+
+          <div class="media-row">
+            <div class="media-card">
+              <video controls preload="metadata" muted playsinline>
+                <source src="images/Re40-ezgif.com-video-speed.mp4" type="video/mp4">
+                Your browser does not support this video.
+              </video>
+              <div class="media-caption">Square-cylinder wake, Re = 40.</div>
+            </div>
+            <div class="media-card">
+              <video controls preload="metadata" muted playsinline>
+                <source src="images/Re100-ezgif.com-video-speed.mp4" type="video/mp4">
+                Your browser does not support this video.
+              </video>
+              <div class="media-caption">Square-cylinder wake, Re = 100.</div>
+            </div>
+            <div class="media-card">
+              <video controls preload="metadata" muted playsinline>
+                <source src="images/Re600-ezgif.com-video-speed.mp4" type="video/mp4">
+                Your browser does not support this video.
+              </video>
+              <div class="media-caption">Higher-Reynolds-number wake case.</div>
+            </div>
+            <div class="media-card">
+              <video controls preload="metadata" muted playsinline>
+                <source src="images/Re5e6-ezgif.com-video-speed.mp4" type="video/mp4">
+                Your browser does not support this video.
+              </video>
+              <div class="media-caption">High-Reynolds-number visualisation test.</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="project">
+          <div class="project-title">2D wave equation: energy conservation and Lax-Wendroff correction</div>
+          <div class="project-meta">Energy method, mesh refinement, modified-equation reasoning, FFT of energy error</div>
+          <p>This study models the 2D wave equation and monitors the total energy over time. The baseline energy is taken from the initial condition, and the moving energy curve is compared against that baseline. As the mesh is refined, the displacement between the initial baseline and the computed total energy reduces, which is the expected behaviour for a convergent scheme.</p>
+          <p>Small oscillations still appear when waves interact with boundaries or when separate wave packets meet and superpose. To investigate this, I used the modified-equation idea to identify leading numerical error behaviour, then tested a Lax-Wendroff-style correction designed to reduce the dominant numerical energy oscillations. FFTs of the energy error were then used to compare the frequency content of the error at different resolutions.</p>
+
+          <div class="eq-box">
+            $$
+            u_{tt} = c^2\left(u_{xx} + u_{yy}\right)
+            $$
+          </div>
+
+          <p>The continuous 2D wave equation has an energy-like quantity made from kinetic energy, through \(u_t\), and strain or gradient energy, through \(u_x\) and \(u_y\):</p>
+          <div class="eq-box">
+            $$
+            E(t) = \frac{1}{2}\int_{\Omega}\left[u_t^2
+            + c^2\left(u_x^2 + u_y^2\right)\right]d\Omega
+            $$
+          </div>
+
+          <p>The energy result follows the same logic as the 1D derivation. Multiply the wave equation by \(u_t\), integrate over the domain, and integrate the spatial derivative terms by parts:</p>
+          <div class="eq-box">
+            $$
+            \int_{\Omega}u_{tt}u_t\,d\Omega
+            = c^2\int_{\Omega}\left(u_{xx}+u_{yy}\right)u_t\,d\Omega
+            $$
+            $$
+            \frac{d}{dt}\left[\frac{1}{2}\int_{\Omega}u_t^2\,d\Omega
+            + \frac{c^2}{2}\int_{\Omega}\left(u_x^2+u_y^2\right)d\Omega\right]
+            = c^2\int_{\partial\Omega}\frac{\partial u}{\partial n}u_t\,dS
+            $$
+          </div>
+
+          <p>For boundary conditions where the boundary term vanishes, such as homogeneous Neumann \(\partial u/\partial n=0\) or fixed Dirichlet boundaries with no boundary motion, the energy is constant:</p>
+          <div class="eq-box">
+            $$
+            \frac{dE}{dt} = 0
+            $$
+          </div>
+
+          <div class="media-row">
+            <div class="media-card wide">
+              <video controls preload="metadata" muted playsinline>
+                <source src="images/energy_fft_video.mp4" type="video/mp4">
+                Your browser does not support this video.
+              </video>
+              <div class="media-caption">Moving energy and FFT comparison across resolutions. <a href="images/energy_fft_video.mp4">Open video file</a></div>
+            </div>
+          </div>
+
+          <div class="media-row">
+            <div class="media-card">
+              <img src="images/figure_5_method_energy_comparison.png" alt="Energy comparison for N equals 150">
+              <div class="media-caption">Energy comparison between central and modified Lax-Wendroff-style correction at N = 150.</div>
+            </div>
+            <div class="media-card">
+              <img src="images/figure_fft_energy_error.png" alt="FFT of normalised energy error for N equals 150">
+              <div class="media-caption">FFT of the normalised energy error at N = 150.</div>
+            </div>
+          </div>
+
+          <h3>Result observations</h3>
+          <p>The energy comparison shows why the correction is useful. The unmodified central result has sharper energy-error excursions, especially around wave interactions and boundary reflections. The modified Lax-Wendroff-style correction reduces the largest excursions and keeps the energy curve closer to the initial baseline, although it does not remove all oscillatory behaviour.</p>
+          <p>The FFT plot shows that most of the energy-error content is concentrated at low frequencies. The correction changes the frequency content of the error and reduces the dominant energy-error response, which suggests that the remaining oscillation is not random noise but a structured numerical effect from the discretisation and boundary interactions.</p>
+
+          <p class="tags">2D wave equation · energy method · Lax-Wendroff correction · modified equation · FFT · mesh refinement</p>
+        </div>
+
+        <hr class="divider">
+
+        <div class="project">
+          <div class="project-title">1D scheme comparison: numerical dispersion and dissipation</div>
+          <div class="project-meta">Upwind, Lax-Friedrichs, Lax-Wendroff and analytical reference comparisons</div>
+          <p>This study compares how different finite-difference schemes transport an initial signal. The aim is to see which schemes smear the solution through numerical dissipation and which schemes produce phase errors or oscillations through numerical dispersion.</p>
+          <p>One-dimensional solvers are a necessary building step. They make it easier to isolate the behaviour of a numerical scheme before using it in 2D or 3D. Many numerical methods are first tested on simple 1D cases because the errors are easier to interpret: diffusion shows up as smoothing, while dispersion shows up as phase error, overshoot, or oscillation.</p>
+          <p>Upwind schemes are usually robust but can be strongly diffusive. Lax-Friedrichs introduces additional smoothing. Lax-Wendroff is less diffusive, but can introduce dispersive oscillations near steep gradients. Comparing the same initial condition at several grid resolutions makes these behaviours easier to see.</p>
+
+          <div class="eq-box">
+            $$
+            u_t + a u_x = 0
+            $$
+          </div>
+
+          <img
+  src="images/comparison_of_different_methods.png"
+  alt="Comparison of upwind, Lax-Friedrichs, and Lax-Wendroff schemes for 1D advection"
+  class="media-wide"
+>
+
+<p class="media-caption" style="max-width:650px; margin-left:auto; margin-right:auto;">
+  Static comparison of upwind, Lax-Friedrichs, and Lax-Wendroff schemes for the 1D linear advection equation.
+  The top row compares the transported solution against the analytical reference, while the bottom row shows the relative L2 error.
+</p>
+          <p class="tags">1D advection · upwind · Lax-Friedrichs · Lax-Wendroff · dispersion · dissipation · grid refinement</p>
+        </div>
+
+        <!-- NUMERICAL PROJECT TEMPLATE START
+        <hr class="divider">
+        <div class="project">
+          <div class="project-title">New project title</div>
+          <div class="project-meta">Short method summary</div>
+          <p>Write what the project does here.</p>
+          <p class="tags">Python · method one · method two</p>
+          <video class="media-wide" controls preload="metadata" muted>
+            <source src="images/your-video.mp4" type="video/mp4">
+            Your browser does not support this video.
+          </video>
+        </div>
+        NUMERICAL PROJECT TEMPLATE END -->
+      </section>
+
+      <section id="page-research" class="page plain-layout">
+        <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
+        <h2>Research</h2>
+        <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
+
+        <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
+        <p>My undergraduate dissertation investigated leading-edge tubercles as a biomimetic, quasi-passive flow-control feature. The work focused on how sinusoidal leading-edge geometry can affect local separation, stall behaviour, and lift production on an aft element.</p>
+        <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
+
+        <h3>EasyTunnel methodology</h3>
+        <p>EasyTunnel also belongs here because the tool needs a technical basis: control-volume assumptions, area-ratio handling, dynamic pressure scaling, pressure-loss coefficients, and a clear statement of limitations.</p>
+      </section>
+
+      <section id="page-et-about" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; About</div>
+        <h2>About EasyTunnel</h2>
+        <div class="logo-main">
+          <img src="images/easytunnel-symbol-text.png" alt="EasyTunnel logo">
+        </div>
+        <p>I made EasyTunnel because early wind tunnel design can feel scattered. There are useful equations and correlations in the literature, but a beginner often has to jump between area ratios, test-section speed, pressure loss, Reynolds number, and power estimates before getting a basic sense of whether a design is realistic.</p>
+        <p>The aim was to make a study tool that keeps those relationships in one place. It is not a final design package. It is a transparent preliminary calculator for learning and early feasibility checks.</p>
+      </section>
+
+      <section id="page-et-open" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; Open the Tool</div>
+        <h2>Open EasyTunnel</h2>
+        <p>The web version of EasyTunnel can be opened from the link below.</p>
+        <p><a href="https://study-wind-tunnel-calculator.pages.dev/easytunnel" target="_blank">Open EasyTunnel in a new tab</a></p>
+      </section>
+
+      <section id="page-et-how-to-use" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; How to Use It</div>
+        <h2>How to Use EasyTunnel</h2>
+        <ol>
+          <li>Choose a target test-section Mach number or velocity.</li>
+          <li>Enter the test-section dimensions.</li>
+          <li>Choose the contraction and diffuser area ratios.</li>
+          <li>Check the estimated Reynolds number, pressure loss, and power requirement.</li>
+          <li>Adjust the geometry until the design is reasonable.</li>
+        </ol>
+      </section>
+
+      <section id="page-et-inputs" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; Inputs</div>
+        <h2>EasyTunnel Inputs</h2>
+        <ul>
+          <li><strong>Test-section Mach number or velocity:</strong> sets the main operating condition.</li>
+          <li><strong>Test-section dimensions:</strong> define the reference area.</li>
+          <li><strong>Contraction and diffuser area ratios:</strong> define the main geometry changes.</li>
+          <li><strong>Air properties:</strong> density and viscosity assumptions for Reynolds number and loss estimates.</li>
+        </ul>
+      </section>
+
+      <section id="page-et-outputs" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; Outputs</div>
+        <h2>EasyTunnel Outputs</h2>
+        <ul>
+          <li>Local velocity and Mach number estimates</li>
+          <li>Reynolds number</li>
+          <li>Section loss coefficients</li>
+          <li>Total pressure drop</li>
+          <li>Preliminary motor power requirement</li>
+        </ul>
+      </section>
+
+      <section id="page-et-limitations" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; Limitations</div>
+        <h2>EasyTunnel Limitations</h2>
+        <p>EasyTunnel is not a replacement for detailed wind tunnel design, fan selection, structural design, acoustic design, or experimental validation. It is a preliminary calculator for learning, comparison, and early feasibility checks.</p>
+      </section>
+
+      <section id="page-easytunnel-theory" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel</div>
+        <h2>EasyTunnel</h2>
+        <div class="logo-main">
+          <img src="images/easytunnel-symbol-text.png" alt="EasyTunnel logo">
+        </div>
+
+        <p><em>EasyTunnel is a preliminary study tool for sizing low-speed open-circuit wind tunnels.</em></p>
+
+        <h3>Use or download the tool</h3>
+        <p>
+          <a href="https://study-wind-tunnel-calculator.pages.dev/easytunnel" target="_blank">Open the web version</a>
+          &nbsp;·&nbsp;
+          <a href="downloads/EasyTunnel.zip" download>Download the desktop tool</a>
+        </p>
+        <p class="small">Place the downloadable file in a folder called <code>downloads</code> inside your website folder. If your file has a different name, change <code>downloads/EasyTunnel.zip</code> in the HTML.</p>
+
+        <h3>Why I made it</h3>
+        <p>Early wind tunnel sizing can be awkward because the important quantities are spread across several calculations. Test-section velocity, area ratio, Reynolds number, pressure loss, contraction sizing, diffuser behaviour, and motor power all depend on one another. EasyTunnel puts those first-order relationships into one place so a rough design can be checked quickly.</p>
+
+        <h3>Reference test section</h3>
+        <p>The test section is treated as the reference section because it is where the target flow condition matters. The chosen test-section Mach number or velocity sets the main dynamic pressure scale, and the other sections are related back to it through area ratios and continuity.</p>
+
+        <h3>Area ratios and velocity scaling</h3>
+        <p>For a preliminary incompressible calculation, continuity links area and velocity. If the area contracts, the velocity rises. If the area expands, the velocity falls. This allows the calculator to estimate local speeds through the contraction, test section, and diffuser from a small set of geometric inputs.</p>
+
+        <h3>Pressure loss and power</h3>
+        <p>Each section is assigned an approximate loss coefficient. These losses are accumulated to estimate the total pressure drop through the tunnel. The required power is then estimated from pressure drop and volume flow rate, giving an early indication of whether the proposed tunnel size and speed are realistic.</p>
+
+        <h3>Limitations</h3>
+        <p>EasyTunnel is not a replacement for a full wind tunnel design process. It does not replace detailed fan selection, structural design, acoustic design, flow-quality assessment, or experimental validation. Its purpose is to support early design thinking and help students understand how the main sizing quantities interact.</p>
+      </section>
+
+      <section id="page-reading" class="page">
+        <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; Reading List</div>
+        <h2>Reading List</h2>
+        <h3>CFD and numerical methods</h3>
+        <ul class="reading-list">
+          <li><strong>Computational Fluid Dynamics</strong>, John D. Anderson.</li>
+          <li><strong>Numerical Computation of Internal and External Flows</strong>, Hirsch.</li>
+          <li><strong>Riemann Solvers and Numerical Methods for Fluid Dynamics</strong>, Toro.</li>
+          <li><strong>CFD Python / AeroPython material</strong>, Lorena Barba.</li>
+        </ul>
+      </section>
+
+      <section id="page-blog" class="page plain-layout">
+        <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Blog</div>
+        <h2>Blog</h2>
+        <p class="note">Short development notes, solver progress, mistakes, fixes, and things I learned.</p>
+
+        <!-- BLOG POST TEMPLATE
+        <div class="blog-post">
+          <h3>New post title</h3>
+          <div class="blog-date">Day Month Year</div>
+          <p>First paragraph.</p>
+          <p>Second paragraph.</p>
+        </div>
+        <hr class="divider">
+        -->
+
+        <div class="blog-post">
+  <h3>Finishing the 12 steps to Navier-Stokes</h3>
+  <div class="blog-date">May 2026</div>
+  <p>I have now finished Lorena Barba's 12 steps to Navier-Stokes. The next aim is to turn that learning into my own Jupyter notebook series for people starting CFD from scratch.</p>
+  <p>The notebook will guide new CFD practitioners through the process of coding a 2D cylinder wake simulation properly: from the governing equations and boundary conditions through to pressure projection, stability limits, post-processing, and interpretation of the wake.</p>
+  <p>I think this could be especially useful for MSc students at Brunel who are beginning numerical fluid mechanics or CFD and want a practical route from simple finite-difference ideas to a recognisable flow simulation.</p>
+</div>
+
+<hr class="divider">
+      </section>
+
+    </div>
+  </div>
+
+  <div id="footer-nav">
+    <button onclick="showPage('contact')" id="nav-contact" class="active-nav">Contact</button>
+    <button onclick="showPage('numerical')" id="nav-numerical">Numerical Progress</button>
+    <button onclick="showPage('research')" id="nav-research">Research</button>
+    <button onclick="showPage('easytunnel-theory')" id="nav-easytunnel-theory">EasyTunnel</button>
+    <button onclick="showPage('blog')" id="nav-blog">Blog</button>
+  </div>
+
+</div>
+
+<script>
+function showPage(pageId) {
+  var page = document.getElementById('page-' + pageId);
+
+  if (!page) {
+    console.warn('No page found for:', pageId);
+    return;
+  }
+
+  document.querySelectorAll('.page').forEach(function(section) {
+    section.classList.remove('active');
+  });
+
+  page.classList.add('active');
+
+  if (page.classList.contains('plain-layout')) {
+    document.body.classList.add('plain-page');
+  } else {
+    document.body.classList.remove('plain-page');
+  }
+
+  document.querySelectorAll('#footer-nav button').forEach(function(button) {
+    button.classList.remove('active-nav');
+  });
+
+  var footerButton = document.getElementById('nav-' + pageId);
+  if (footerButton) {
+    footerButton.classList.add('active-nav');
+  }
+
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise([page]);
+  }
+
+  if (history.pushState) {
+    history.pushState(null, '', '#' + pageId);
+  } else {
+    window.location.hash = pageId;
+  }
+
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('load', function() {
+  var initialPage = window.location.hash.replace('#', '');
+
+  if (initialPage && document.getElementById('page-' + initialPage)) {
+    showPage(initialPage);
+  }
+});
+</script>
+
+</body>
+</html>
