@@ -891,7 +891,7 @@ img.media-wide {
         <!-- NUMERICAL PROJECT TEMPLATE START
         <hr class="divider">
         <div class="project">
-   <section id="page-research" class="page plain-layout">
+   <section id="page-research" class="page">
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
         <h2>Research</h2>
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
@@ -1078,11 +1078,12 @@ img.media-wide {
 
 <script>
 function showPage(pageId) {
+  pageId = String(pageId || '').replace(/^#/, '').replace(/^page-/, '');
   var page = document.getElementById('page-' + pageId);
 
   if (!page) {
     console.warn('No page found for:', pageId);
-    return;
+    return false;
   }
 
   document.querySelectorAll('.page').forEach(function(section) {
@@ -1120,7 +1121,7 @@ function showPage(pageId) {
 }
 
 window.addEventListener('load', function() {
-  var initialPage = window.location.hash.replace('#', '');
+  var initialPage = window.location.hash.replace('#', '').replace(/^page-/, '');
 
   if (initialPage && document.getElementById('page-' + initialPage)) {
     showPage(initialPage);
