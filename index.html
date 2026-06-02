@@ -27,6 +27,8 @@
 
    hamza-website/
    ├── index.html
+   ├── documents/
+   │   └── flow-past-cylinder-report.pdf
    └── images/
        ├── easytunnel-symbol-text.png
        ├── sidebar-cfd.png
@@ -387,6 +389,42 @@ pre {
   line-height: 1.25;
 }
 
+.research-card {
+  border: 1px solid #ccc;
+  background: #fafafa;
+  padding: 10px 12px;
+  margin: 14px 0 18px;
+}
+
+.research-card h3 {
+  margin-top: 0;
+}
+
+.pdf-actions {
+  margin: 8px 0 10px;
+}
+
+.pdf-actions a {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 650px;
+  border: 1px solid #aaa;
+  background: #eee;
+  margin: 10px 0 8px;
+}
+
+.pdf-viewer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #fff;
+}
+
 img.media-wide {
   background: #fff;
   object-fit: contain;
@@ -500,6 +538,10 @@ img.media-wide {
 
   .media-row {
     grid-template-columns: 1fr;
+  }
+
+  .pdf-viewer {
+    height: 520px;
   }
 
   #footer-nav button {
@@ -849,25 +891,45 @@ img.media-wide {
         <!-- NUMERICAL PROJECT TEMPLATE START
         <hr class="divider">
         <div class="project">
-          <div class="project-title">New project title</div>
-          <div class="project-meta">Short method summary</div>
-          <p>Write what the project does here.</p>
-          <p class="tags">Python · method one · method two</p>
-          <video class="media-wide" controls preload="metadata" muted>
-            <source src="images/your-video.mp4" type="video/mp4">
-            Your browser does not support this video.
-          </video>
-        </div>
-        NUMERICAL PROJECT TEMPLATE END -->
-      </section>
-
-      <section id="page-research" class="page plain-layout">
+   <section id="page-research" class="page plain-layout">
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
         <h2>Research</h2>
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
 
+        <div class="research-card">
+          <h3>Two-dimensional numerical simulation of flow past a circular cylinder</h3>
+          <div class="project-meta">Finite-difference incompressible Navier-Stokes solver · Chorin projection · masked circular cylinder · drag validation · vortex shedding</div>
+
+          <p>This short technical report documents a two-dimensional incompressible flow solver developed for flow past a circular cylinder. The solver uses Chorin's projection method for pressure-velocity coupling, second-order central differencing for pressure and diffusion, and a directional second-order upwind scheme for advection. The cylinder is introduced through a mask-based immersed-boundary treatment on a Cartesian grid.</p>
+
+          <p>The report compares the predicted drag coefficient variation against experimental cylinder-drag correlations across a wide Reynolds-number range. It also includes vorticity and streamline visualisations to show the expected separated wake structure and the periodic shedding of clockwise and anticlockwise vortices.</p>
+
+          <p class="tags">Python · NumPy · finite differences · Chorin projection · immersed boundary mask · circular cylinder · drag coefficient · vortex shedding</p>
+
+          <div class="pdf-actions">
+            <a href="documents/flow-past-cylinder-report.pdf" target="_blank" rel="noopener">Open PDF in a new tab</a>
+            <a href="documents/flow-past-cylinder-report.pdf" download>Download PDF</a>
+          </div>
+
+          <div class="pdf-viewer">
+            <iframe
+              src="documents/flow-past-cylinder-report.pdf#toolbar=1&navpanes=0&view=FitH"
+              title="Two-dimensional numerical simulation of flow past a circular cylinder PDF">
+            </iframe>
+          </div>
+
+          <p class="small">If the embedded viewer does not load on a mobile browser, use the open or download link above.</p>
+        </div>
+
         <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
         <p>My undergraduate dissertation investigated leading-edge tubercles as a biomimetic, quasi-passive flow-control feature. The work focused on how sinusoidal leading-edge geometry can affect local separation, stall behaviour, and lift production on an aft element.</p>
+        <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
+
+        <h3>EasyTunnel methodology</h3>
+        <p>EasyTunnel also belongs here because the tool needs a technical basis: control-volume assumptions, area-ratio handling, dynamic pressure scaling, pressure-loss coefficients, and a clear statement of limitations.</p>
+      </section>
+
+      p>
         <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
 
         <h3>EasyTunnel methodology</h3>
