@@ -27,8 +27,6 @@
 
    hamza-website/
    ├── index.html
-   ├── documents/
-   │   └── flow-past-cylinder-report.pdf
    └── images/
        ├── easytunnel-symbol-text.png
        ├── sidebar-cfd.png
@@ -541,7 +539,7 @@ img.media-wide {
   }
 
   .pdf-viewer {
-    height: 520px;
+    height: 480px;
   }
 
   #footer-nav button {
@@ -891,7 +889,19 @@ img.media-wide {
         <!-- NUMERICAL PROJECT TEMPLATE START
         <hr class="divider">
         <div class="project">
-   <section id="page-research" class="page">
+          <div class="project-title">New project title</div>
+          <div class="project-meta">Short method summary</div>
+          <p>Write what the project does here.</p>
+          <p class="tags">Python · method one · method two</p>
+          <video class="media-wide" controls preload="metadata" muted>
+            <source src="images/your-video.mp4" type="video/mp4">
+            Your browser does not support this video.
+          </video>
+        </div>
+        NUMERICAL PROJECT TEMPLATE END -->
+      </section>
+
+      <section id="page-research" class="page plain-layout">
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
         <h2>Research</h2>
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
@@ -923,13 +933,6 @@ img.media-wide {
 
         <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
         <p>My undergraduate dissertation investigated leading-edge tubercles as a biomimetic, quasi-passive flow-control feature. The work focused on how sinusoidal leading-edge geometry can affect local separation, stall behaviour, and lift production on an aft element.</p>
-        <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
-
-        <h3>EasyTunnel methodology</h3>
-        <p>EasyTunnel also belongs here because the tool needs a technical basis: control-volume assumptions, area-ratio handling, dynamic pressure scaling, pressure-loss coefficients, and a clear statement of limitations.</p>
-      </section>
-
-      p>
         <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
 
         <h3>EasyTunnel methodology</h3>
@@ -1078,12 +1081,11 @@ img.media-wide {
 
 <script>
 function showPage(pageId) {
-  pageId = String(pageId || '').replace(/^#/, '').replace(/^page-/, '');
   var page = document.getElementById('page-' + pageId);
 
   if (!page) {
     console.warn('No page found for:', pageId);
-    return false;
+    return;
   }
 
   document.querySelectorAll('.page').forEach(function(section) {
@@ -1121,7 +1123,7 @@ function showPage(pageId) {
 }
 
 window.addEventListener('load', function() {
-  var initialPage = window.location.hash.replace('#', '').replace(/^page-/, '');
+  var initialPage = window.location.hash.replace('#', '');
 
   if (initialPage && document.getElementById('page-' + initialPage)) {
     showPage(initialPage);
