@@ -907,6 +907,281 @@ img.media-wide {
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
 
         <div class="research-card">
+          <!-- PASTE THIS BLOCK INSIDE page-research, after the existing research cards -->
+
+<div class="research-card">
+  <h3>Sparse LU factorisation of the pressure Poisson system</h3>
+  <div class="project-meta">SciPy SuperLU · sparse CSR matrix · one-time factorisation · runtime comparison vs. Jacobi iteration · validation against Schlichting (1979)</div>
+
+  <p>Each time step of the Chorin projection method requires solving a pressure Poisson equation. The naive approach is to re-solve from scratch every step using an iterative method. Instead, I reformulated the problem as a sparse linear system, factorised the coefficient matrix once using SuperLU, and then solved using cheap forward/back substitution at every subsequent time step.</p>
+
+  <h4>From the governing equation to a linear system</h4>
+
+  <p>The pressure correction step requires solving</p>
+
+  <div class="eq-box">
+    $$
+    -\nabla^2 p = \frac{\rho}{\Delta t}\,\nabla \cdot \mathbf{u}^*
+    $$
+  </div>
+
+  <p>where \(\mathbf{u}^*\) is the intermediate velocity field from the momentum predictor. Discretising the Laplacian on a uniform Cartesian grid with spacing \(\Delta x = \Delta y = h\) using second-order central differences at interior node \((i,j)\) gives</p>
+
+  <div class="eq-box">
+    $$
+    -\frac{p_{i-1,j} - 2p_{i,j} + p_{i+1,j}}{h^2}
+    - \frac{p_{i,j-1} - 2p_{i,j} + p_{i,j+1}}{h^2}
+    = b_{i,j}
+    $$
+  </div>
+
+  <p>where \(b_{i,j} = \tfrac{\rho}{\Delta t}(\nabla \cdot \mathbf{u}^*)_{i,j}\) is the right-hand-side divergence source term. Collecting the pressure unknowns into a single vector \(\mathbf{p} \in \mathbb{R}^N\) by stacking grid rows, and the right-hand side into \(\mathbf{b} \in \mathbb{R}^N\), yields the linear system</p>
+
+  <div class="eq-box">
+    $$
+    A\,\mathbf{p} = \mathbf{b}, \qquad A \in \mathbb{R}^{N \times N},\quad \mathbf{p},\,\mathbf{b} \in \mathbb{R}^N
+    $$
+  </div>
+
+  <p>Here \(A\) is the discrete Laplacian operator: a sparse, symmetric matrix that encodes the stencil connectivity of the grid. It is a transformation that acts on the unknown pressure field \(\mathbf{p}\) to produce the divergence field \(\mathbf{b}\). Critically, \(A\) depends only on the grid geometry, not on the flow state. It is the same matrix at every time step. Only \(\mathbf{b}\) changes.</p>
+
+  <h4>Structure and diagonal dominance of \(A\)</h4>
+
+  <p>For an \(n_x \times n_y\) grid with \(N = n_x n_y\) interior unknowns, each row of \(A\) corresponds to one grid node. The diagonal entry is \(4/h^2\) and the four off-diagonal entries (for the four neighbours) are each \(-1/h^2\). The matrix is strictly diagonally dominant: for every row \(i\),</p>
+
+  <div class="eq-box">
+    $$
+    |a_{ii}| \;>\; \sum_{j \neq i} |a_{ij}|
+    \qquad \Longleftrightarrow \qquad
+    \frac{4}{h^2} > 4 \cdot \frac{1}{h^2}
+    $$
+  </div>
+
+  <p>where the triangle \(\sum_{j \neq i}\) denotes the sum over all off-diagonal entries in row \(i\). Strict diagonal dominance guarantees that \(A\) is non-singular and that direct factorisation methods are numerically stable without pivoting.</p>
+
+  <p>For a small \(4 \times 4\) grid (\(N = 4\) unknowns in 1D for illustration) the matrix looks like</p>
+
+  <div class="eq-box">
+    $$
+    A = \frac{1}{h^2}
+    \begin{pmatrix}
+      4 & -1 &  0 &  0 \\
+     -1 &  4 & -1 &  0 \\
+      0 & -1 &  4 & -1 \\
+      0 &  0 & -1 &  4
+    \end{pmatrix}
+    $$
+  </div>
+
+  <h4>LU factorisation</h4>
+
+  <p>Any non-singular matrix \(A\) can be decomposed by Gaussian elimination into the product of a unit lower-triangular matrix \(L\) and an upper-triangular matrix \(U\):</p>
+
+  <div class="eq-box">
+    $$
+    A = L\,U
+    $$
+  </div>
+
+  <p>The elimination process applies a sequence of elementary row-operation matrices \(E_{2,1},\, E_{3,1},\, \ldots,\, E_{n,n-1}\) from the left to zero out the sub-diagonal entries column by column:</p>
+
+  <div class="eq-box">
+    $$
+    E_{n,n-1} \cdots E_{3,2}\, E_{2,1}\, A = U
+    $$
+  </div>
+
+  <p>Inverting the elimination matrices (which amounts to simply negating the multipliers) and collecting them on the right gives</p>
+
+  <div class="eq-box">
+    $$
+    A = E_{2,1}^{-1}\, E_{3,1}^{-1} \cdots E_{n,n-1}^{-1}\, U = L\, U
+    $$
+  </div>
+
+  <p>where \(L = E_{2,1}^{-1} E_{3,1}^{-1} \cdots E_{n,n-1}^{-1}\) is unit lower triangular with the Gaussian multipliers \(\ell_{ij} = a_{ij}/a_{jj}\) sitting below the diagonal at their natural positions.</p>
+
+  <h4>Worked example: \(3 \times 3\) system</h4>
+
+  <p>Take the \(3 \times 3\) tridiagonal system (1D, \(h = 1\) for clarity):</p>
+
+  <div class="eq-box">
+    $$
+    A =
+    \begin{pmatrix}
+      4 & -1 &  0 \\
+     -1 &  4 & -1 \\
+      0 & -1 &  4
+    \end{pmatrix}
+    $$
+  </div>
+
+  <p><strong>Step 1.</strong> Eliminate below the pivot \(a_{11} = 4\). The multiplier for row 2 is \(\ell_{21} = (-1)/4 = -1/4\). Add \((1/4)\) times row 1 to row 2:</p>
+
+  <div class="eq-box">
+    $$
+    E_{2,1} =
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+      \tfrac{1}{4} & 1 & 0 \\
+      0 & 0 & 1
+    \end{pmatrix},
+    \qquad
+    E_{2,1}\,A =
+    \begin{pmatrix}
+      4 & -1 & 0 \\
+      0 & \tfrac{15}{4} & -1 \\
+      0 & -1 & 4
+    \end{pmatrix}
+    $$
+  </div>
+
+  <p><strong>Step 2.</strong> Eliminate below the pivot \(a_{22} = 15/4\). Multiplier: \(\ell_{32} = (-1)/(15/4) = -4/15\). Add \((4/15)\) times row 2 to row 3:</p>
+
+  <div class="eq-box">
+    $$
+    E_{3,2} =
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+      0 & 1 & 0 \\
+      0 & \tfrac{4}{15} & 1
+    \end{pmatrix},
+    \qquad
+    U = E_{3,2}\,E_{2,1}\,A =
+    \begin{pmatrix}
+      4 & -1 & 0 \\
+      0 & \tfrac{15}{4} & -1 \\
+      0 & 0 & \tfrac{56}{15}
+    \end{pmatrix}
+    $$
+  </div>
+
+  <p>Reading off the inverse elimination matrices gives</p>
+
+  <div class="eq-box">
+    $$
+    L =
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+     -\tfrac{1}{4} & 1 & 0 \\
+      0 & -\tfrac{4}{15} & 1
+    \end{pmatrix},
+    \qquad
+    A = L\,U =
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+     -\tfrac{1}{4} & 1 & 0 \\
+      0 & -\tfrac{4}{15} & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      4 & -1 & 0 \\
+      0 & \tfrac{15}{4} & -1 \\
+      0 & 0 & \tfrac{56}{15}
+    \end{pmatrix}
+    $$
+  </div>
+
+  <h4>Worked example: \(5 \times 5\) system</h4>
+
+  <p>For the \(5 \times 5\) tridiagonal discrete Laplacian (\(h = 1\)):</p>
+
+  <div class="eq-box">
+    $$
+    A =
+    \begin{pmatrix}
+      4 & -1 &  0 &  0 &  0 \\
+     -1 &  4 & -1 &  0 &  0 \\
+      0 & -1 &  4 & -1 &  0 \\
+      0 &  0 & -1 &  4 & -1 \\
+      0 &  0 &  0 & -1 &  4
+    \end{pmatrix}
+    $$
+  </div>
+
+  <p>Gaussian elimination produces the following sequence of pivots and multipliers (all entries \(\times h^2\) with \(h=1\)):</p>
+
+  <div class="eq-box">
+    $$
+    d_1 = 4, \quad
+    d_2 = 4 - \tfrac{1}{4} = \tfrac{15}{4}, \quad
+    d_3 = 4 - \tfrac{1}{d_2} = \tfrac{56}{15}, \quad
+    d_4 = 4 - \tfrac{1}{d_3} = \tfrac{209}{56}, \quad
+    d_5 = 4 - \tfrac{1}{d_4} = \tfrac{780}{209}
+    $$
+    $$
+    \ell_{21} = -\tfrac{1}{4},\quad
+    \ell_{32} = -\tfrac{1}{d_2} = -\tfrac{4}{15},\quad
+    \ell_{43} = -\tfrac{1}{d_3} = -\tfrac{15}{56},\quad
+    \ell_{54} = -\tfrac{1}{d_4} = -\tfrac{56}{209}
+    $$
+  </div>
+
+  <p>The factorisation is then</p>
+
+  <div class="eq-box">
+    $$
+    L =
+    \begin{pmatrix}
+      1 & & & & \\
+      -\tfrac{1}{4} & 1 & & & \\
+      0 & -\tfrac{4}{15} & 1 & & \\
+      0 & 0 & -\tfrac{15}{56} & 1 & \\
+      0 & 0 & 0 & -\tfrac{56}{209} & 1
+    \end{pmatrix},
+    \quad
+    U =
+    \begin{pmatrix}
+      4 & -1 & & & \\
+       & \tfrac{15}{4} & -1 & & \\
+       &  & \tfrac{56}{15} & -1 & \\
+       &  &  & \tfrac{209}{56} & -1 \\
+       &  &  &  & \tfrac{780}{209}
+    \end{pmatrix}
+    $$
+  </div>
+
+  <h4>Why factorising once matters for the solver</h4>
+
+  <p>Once \(A = LU\) is computed, solving \(A\mathbf{p} = \mathbf{b}\) reduces to two triangular sweeps:</p>
+
+  <div class="eq-box">
+    $$
+    L\,\mathbf{y} = \mathbf{b} \quad \text{(forward substitution)}, \qquad
+    U\,\mathbf{p} = \mathbf{y} \quad \text{(back substitution)}
+    $$
+  </div>
+
+  <p>Each sweep costs \(\mathcal{O}(N)\) for a tridiagonal system (or \(\mathcal{O}(\text{nnz})\) for the general sparse case). The factorisation itself costs more, but it is paid only once. At every subsequent time step only the right-hand side \(\mathbf{b}\) changes — the divergence field from the new intermediate velocity — so the solver reduces to two \(\mathcal{O}(N)\) substitutions. This is why the Sparse LU runtime scales so gently with \(N\) compared to Jacobi iteration, which must re-converge from scratch at every step.</p>
+
+  <p>In practice, SciPy wraps the SuperLU library. The factorisation is requested once:</p>
+
+  <pre><code>from scipy.sparse.linalg import splu
+lu = splu(A_csr)          # factorised once, before the time loop</code></pre>
+
+  <p>and then each time step calls:</p>
+
+  <pre><code>p = lu.solve(b)           # O(nnz) forward + back substitution</code></pre>
+
+  <h4>Runtime comparison</h4>
+
+  <p>The plot below compares total solver wall-time against the Jacobi iterative solver across grid sizes from \(N \approx 200\) to \(N \approx 80{,}000\) pressure unknowns. Jacobi shows steep super-linear growth because both the iteration count and the per-iteration cost grow with \(N\). The Sparse LU curve remains shallow across the full range.</p>
+
+  <img src="images/runtime_comparison.png" alt="Run time comparison: Jacobi vs Sparse LU across grid sizes" class="media-wide">
+  <p class="media-caption" style="max-width:650px; margin-left:auto; margin-right:auto;">
+    Wall-clock run time (log–log) for the full solver across increasing numbers of pressure unknowns \(N\). Jacobi iteration grows steeply; Sparse LU remains shallow because the factorisation is paid once and each time step costs only two triangular sweeps.
+  </p>
+
+  <h4>Validation</h4>
+
+  <p>The solver was validated for flow past a circular cylinder by comparing the predicted drag coefficient \(C_D\) against Schlichting (1979) experimental correlation data across seven decades of Reynolds number (\(Re = 0.1\) to \(Re = 10^7\)). The 24,200-point mesh results agree closely with the experimental curve across the laminar and early turbulent regimes, with the expected divergence at high \(Re\) where the 2D RANS assumptions break down.</p>
+
+  <img src="images/cd_validation.png" alt="Drag coefficient validation against Schlichting 1979" class="media-wide">
+  <p class="media-caption" style="max-width:650px; margin-left:auto; margin-right:auto;">
+    Drag coefficient \(C_D\) vs. Reynolds number \(Re\) for flow past a circular cylinder. Present CFD results on a 24,200-point mesh compared against Schlichting (1979) experimental data.
+  </p>
+
+  <p class="tags">Python · SciPy · SuperLU · sparse CSR · Chorin projection · pressure Poisson · LU factorisation · forward/back substitution · Jacobi comparison · Schlichting validation</p>
+</div>
           <h3>Two-dimensional numerical simulation of flow past a circular cylinder</h3>
           <div class="project-meta">Finite-difference incompressible Navier-Stokes solver · Chorin projection · masked circular cylinder · drag validation · vortex shedding</div>
 
