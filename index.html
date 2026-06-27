@@ -1139,7 +1139,13 @@ img.media-wide {
     \end{pmatrix}
     $$
   </div>
-
+<img src="images/comparison_of_matrix.png" alt="Sparsity patterns of A, L and U across four grid sizes" class="media-wide">
+<p class="media-caption" style="max-width:650px; margin-left:auto; margin-right:auto;">
+  Sparsity patterns of A, L, and U across four grid sizes (N = 90, 270, 1470, 75000). 
+  A remains banded at every scale. L and U develop significant fill-in as N grows — 
+  the dense bottom-right corner of L at large N shows why reordering strategies 
+  (such as minimum-degree or reverse Cuthill–McKee) matter at very large problem sizes.
+</p>
   <h4>Why factorising once matters for the solver</h4>
 
   <p>Once \(A = LU\) is computed, solving \(A\mathbf{p} = \mathbf{b}\) reduces to two triangular sweeps:</p>
