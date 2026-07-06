@@ -501,7 +501,27 @@ img.media-wide {
 #footer-nav button.active-nav {
   color: var(--header-text);
 }
+.hero-image {
+    width: 100%;
+    max-width: 620px;
+    margin: 30px auto;
+    text-align: center;
+}
 
+.hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #666;
+    background: #000;
+}
+
+.hero-caption {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    color: #444;
+    font-style: italic;
+}
 @media (max-width: 760px) {
   body {
     padding: 8px;
@@ -579,10 +599,7 @@ img.media-wide {
         </a>
       </div>
 
-      <div class="sidebar-img">
-  <img src="images/sidebar-cfd.png" alt="CFD visualisation using my own solver and post-processing.">
-  <div class="sidebar-caption">CFD wake visualisation.</div>
-</div>
+
 
     </div>
 
@@ -596,6 +613,14 @@ img.media-wide {
         <p>Email: <a href="mailto:hamza78624@icloud.com">hamza78624@icloud.com</a></p>
 <p>I will strive to reply within a day.</p>
         <p>This website is a compact record of my numerical solvers, engineering tools, research notes, plots, and development logs.</p>
+        <div class="hero-image">
+    <img src="images/sidebar-cfd.png"
+         alt="Vortex shedding behind a circular cylinder">
+
+    <div class="hero-caption">
+        Vortex shedding behind a circular cylinder computed using my own finite-difference Navier–Stokes solver.
+    </div>
+</div>
       </section>
 
       <section id="page-overview" class="page">
