@@ -934,7 +934,94 @@ img.media-wide {
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
         <h2>Research</h2>
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
+<div class="research-card">
+  <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
+  <div class="project-meta">Undergraduate dissertation · OpenFOAM · k–ω SST · high-lift aerofoil · biomimetic flow control · CFD validation</div>
 
+  <p>
+    This undergraduate research project investigated whether leading-edge tubercles could improve the aerodynamic performance
+    of an aft element in a two-element aerofoil system. The central question was deliberately specific: tubercles are already known
+    to delay separation on single-element aerofoils, but it is less obvious whether they can retain that benefit when placed on a
+    flap-like aft element already immersed in the disturbed wake of the fore element.
+  </p>
+
+  <p>
+    I treated this as a numerical investigation of a <em>Wavy Aft Leading Edge</em> (WALE) configuration. The work involved
+    creating the baseline and modified geometries, preparing the computational domain, running CFD simulations across a range
+    of angles of attack, validating the baseline methodology against historical NACA 23012 data, and then comparing the modified
+    tubercled configuration against the clean two-element reference case.
+  </p>
+
+  <div class="eq-box">
+    $$
+    L = \frac{1}{2}\rho V^2 S_{\mathrm{ref}} C_L
+    $$
+    $$
+    V = \sqrt{\frac{2W}{\rho S_{\mathrm{ref}} C_{L,\max}}}
+    $$
+  </div>
+
+  <p>
+    The motivation follows directly from the lift equation. If \(C_{L,\max}\) can be increased during take-off or landing,
+    the required flight speed decreases for a fixed aircraft weight and reference area. The study therefore examined whether
+    a passive biomimetic geometry could increase maximum lift and delay stall without relying on conventional protruding
+    vortex generators.
+  </p>
+
+  <div class="eq-box">
+    $$
+    \phi(x,t)=\overline{\phi}(x,t)+\phi'(x,t)
+    $$
+    $$
+    \sigma = -pI + \mu\left(\nabla \mathbf{u}+(\nabla \mathbf{u})^T\right)
+    $$
+  </div>
+
+  <p>
+    The simulations used a RANS approach with the \(k\text{--}\omega\) SST turbulence model, chosen for its suitability in
+    adverse-pressure-gradient and separated-flow problems. Post-processing focused on lift behaviour, stall progression,
+    surface shear-stress patterns, streamline contours and vortex structures generated near the trough regions of the modified
+    flap leading edge.
+  </p>
+
+  <p>
+    The modified WALE configuration produced a clear improvement over the baseline case: \(C_{L,\max}\) increased by
+    <strong>23%</strong>, stall angle increased by <strong>12.5%</strong>, and the lift loss became more gradual after stall.
+    The flow visualisations indicated coherent streamwise vortex structures over the aft element, supporting the argument that
+    the tubercles energised the boundary layer and helped delay large-scale separation.
+  </p>
+
+  <div class="eq-box">
+    $$
+    \text{Vortex core growth rate} \approx 0.00045\ \mathrm{m\,\alpha^{-1}}
+    $$
+  </div>
+
+  <p>
+    The work also identified a design trade-off: although the tubercled flap improved maximum lift and stall behaviour, it
+    produced a steeper pitching-moment gradient, suggesting greater sensitivity to angle-of-attack changes. This made the
+    conclusion more balanced: the geometry showed strong aerodynamic promise, but further wind-tunnel testing and parametric
+    studies of tubercle amplitude, wavelength and phase would be needed before treating the result as a finished design rule.
+  </p>
+
+  <p class="tags">
+    OpenFOAM · CFD · k–ω SST · RANS · high-lift aerofoil · leading-edge tubercles · WALE · biomimicry · stall delay · vortex structures · NACA 23012 validation
+  </p>
+
+  <div class="pdf-actions">
+    <a href="documents/leading-edge-tubercles-aft-elements.pdf" target="_blank" rel="noopener">Open PDF in a new tab</a>
+    <a href="documents/leading-edge-tubercles-aft-elements.pdf" download>Download PDF</a>
+  </div>
+
+  <div class="pdf-viewer">
+    <iframe
+      src="documents/leading-edge-tubercles-aft-elements.pdf#toolbar=1&navpanes=0&view=FitH"
+      title="Numerical investigation of leading-edge tubercles on aft elements PDF">
+    </iframe>
+  </div>
+
+  <p class="small">If the embedded viewer does not load on a mobile browser, use the open or download link above.</p>
+</div>
         <div class="research-card">
           <!-- PASTE THIS BLOCK INSIDE page-research, after the existing research cards -->
 
@@ -1241,9 +1328,7 @@ lu = splu(A_csr)          # factorised once, before the time loop</code></pre>
           <p class="small">If the embedded viewer does not load on a mobile browser, use the open or download link above.</p>
         </div>
 
-        <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
-        <p>My undergraduate dissertation investigated leading-edge tubercles as a biomimetic, quasi-passive flow-control feature. The work focused on how sinusoidal leading-edge geometry can affect local separation, stall behaviour, and lift production on an aft element.</p>
-        <p>The project combined geometry generation, meshing, CFD simulation, and post-processing. This page will gradually become a cleaner record of the motivation, setup, validation, parametric cases, and aerodynamic trends.</p>
+      
 
         <h3>EasyTunnel methodology</h3>
         <p>EasyTunnel also belongs here because the tool needs a technical basis: control-volume assumptions, area-ratio handling, dynamic pressure scaling, pressure-loss coefficients, and a clear statement of limitations.</p>
