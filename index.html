@@ -567,6 +567,55 @@ img.media-wide {
     font-size: 0.85rem;
   }
 }
+
+/* Research notes appear as selectable HTML and rendered MathJax, not as page images. */
+.research-note-article {
+  max-width: 750px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.research-note-header {
+  margin-bottom: 25px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+}
+.research-note-header h2 {
+  font-size: 1.48rem;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.research-note-byline {
+  font-size: 1.06rem;
+  font-weight: bold;
+  margin-bottom: 13px;
+}
+.research-note-article p { margin: 0 0 19px; overflow-wrap: anywhere; }
+.research-note-equation {
+  display: block;
+  max-width: 100%;
+  margin: 14px 0 24px;
+  padding: 13px 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  font-size: 0.96rem;
+  text-align: center;
+}
+.research-note-equation mjx-container[display="true"] {
+  min-width: max-content;
+  margin: 0.4em 0 !important;
+}
+.research-note-article .pdf-actions {
+  line-height: 1.7;
+  font-size: 0.88rem;
+}
+.research-note-index a { font-weight: normal; }
+@media (max-width: 760px) {
+  .research-note-article { font-size: 14px; line-height: 1.7; }
+  .research-note-header h2 { font-size: 1.28rem; }
+  .research-note-equation { font-size: 0.84rem; }
+}
 </style>
 </head>
 
@@ -934,6 +983,14 @@ img.media-wide {
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Research</div>
         <h2>Research</h2>
         <p>This section is for more formal work: dissertation material, technical notes, validation studies, and engineering tools that have enough method behind them to be written up properly.</p>
+
+        <div class="research-card research-note-index">
+          <h3><a href="#fluid-state-space" onclick="showPage('fluid-state-space'); return false;">State-Space Representation of Fluid Flows</a></h3>
+          <div class="project-meta">Hamza Hussain · Research notes · Full text</div>
+          <p>The instantaneous state of a fluid flow can be represented as a point in a high-dimensional state space.</p>
+          <p><a href="#fluid-state-space" onclick="showPage('fluid-state-space'); return false;">Read the full notes</a> · <a href="documents/state-space-representation-of-fluid-flows.pdf" target="_blank" rel="noopener">Open PDF</a></p>
+        </div>
+
 <div class="research-card">
   <h3>Numerical investigation of leading-edge tubercles on aft elements</h3>
   <div class="project-meta">Undergraduate dissertation · OpenFOAM · k–ω SST · high-lift aerofoil · biomimetic flow control · CFD validation</div>
@@ -1334,6 +1391,118 @@ lu = splu(A_csr)          # factorised once, before the time loop</code></pre>
         <p>EasyTunnel also belongs here because the tool needs a technical basis: control-volume assumptions, area-ratio handling, dynamic pressure scaling, pressure-loss coefficients, and a clear statement of limitations.</p>
       </section>
 
+      <!-- Full HTML transcription of the supplied three-page note.
+           Paragraphs and mathematics are directly selectable on the page. -->
+      <section id="page-fluid-state-space" class="page plain-layout">
+        <div class="breadcrumb">
+          <a href="#research" onclick="showPage('research'); return false;">Research</a> &gt; State-Space Representation of Fluid Flows
+        </div>
+        <article class="research-note-article">
+          <header class="research-note-header">
+            <h2>State-Space Representation of Fluid Flows</h2>
+            <p class="research-note-byline">Hamza Hussain</p>
+            <div class="pdf-actions">
+              <a href="documents/state-space-representation-of-fluid-flows.pdf" target="_blank" rel="noopener">Read the PDF</a>
+              <a href="documents/state-space-representation-of-fluid-flows.pdf" download>Download PDF</a>
+              <a href="#research" onclick="showPage('research'); return false;">Back to Research</a>
+            </div>
+          </header>
+
+          <p>The instantaneous state of a fluid flow can be represented as a point in a high-dimensional state space. By discretising the spatial domain into N points and collecting the six primitive variables at each point, a global state vector \(\bar{q}_m \in \mathbb{R}^{6N}\) can be constructed for each time step, indicated by subscript \(m\). The ambient space \(\mathbb{R}^{6N}\) contains all possible state vectors, although not all correspond to physically admissible fluid states. Conservation laws, boundary conditions and other physical constraints restrict these states to a subset \(\mathcal{M}\subseteq \mathbb{R}^{6N}\). Under suitable conditions, this subset may possess the structure of a smooth manifold. As time progresses, the sequence of state vectors \(\bar{q}_m\) traces a trajectory through the state space, providing a geometric interpretation of the evolution of a fluid flow.</p>
+
+          <p>At any given instance of time, \(t_m\), every point \(\bar{x}\) maps to one coordinate vector in 6D space, this vector contains the state variables, Temperature has now been included:</p>
+
+          <div class="research-note-equation" role="group" aria-label="Six fluid-state variables at a spatial point">
+            $$
+            w(\bar{x}_i,t_m) =
+            \begin{bmatrix}
+            p(\bar{x}_i,t_m)\\
+            u(\bar{x}_i,t_m)\\
+            v(\bar{x}_i,t_m)\\
+            w(\bar{x}_i,t_m)\\
+            \rho(\bar{x}_i,t_m)\\
+            T(\bar{x}_i,t_m)
+            \end{bmatrix}
+            $$
+          </div>
+
+          <p>For brevity, we will write \(p(\bar{x}_i,t_m)=p_{i,m}\):</p>
+
+          <div class="research-note-equation" role="group" aria-label="Equation 1, local state vector">
+            $$
+            w_{i,m} = [p_{i,m},u_{i,m},v_{i,m},w_{i,m},\rho_{i,m},T_{i,m}]^{T}\in\mathbb{R}^{6}\tag{1}
+            $$
+          </div>
+
+          <p>For one moment in time, \(t_m\), the global state vector \(\mathbf{q}_m\) contains all points in domain \(\omega\), \([\bar{x}_i,\ldots,\bar{x}_N]\) for \(t_m\).</p>
+
+          <div class="research-note-equation" role="group" aria-label="Equation 2, global state vector">
+            $$
+            \mathbf{q}_m =
+            \begin{bmatrix} w_{1,m}\\\vdots\\w_{N,m}\end{bmatrix}
+            =
+            \begin{bmatrix}
+            p_{1,m}\\u_{1,m}\\v_{1,m}\\w_{1,m}\\\rho_{1,m}\\T_{1,m}\\
+            \vdots\\
+            p_{N,m}\\u_{N,m}\\v_{N,m}\\w_{N,m}\\\rho_{N,m}\\T_{N,m}
+            \end{bmatrix}
+            \in\mathbb{R}^{6N}\tag{2}
+            $$
+          </div>
+
+          <p>The phase space, \(\mathcal{M}\), is a submanifold of the smooth manifold, \(\mathbb{R}^{6N}\), it is imbedded in, containing instances of \(\mathbf{q}_m\) physically valid and consistent with each other.</p>
+
+          <div class="research-note-equation" role="group" aria-label="Equation 3, constraint-defined phase space">
+            $$
+            \mathcal{M} = \{\mathbf{q}\in\mathbb{R}^{6N}\mid m\in\{1,\ldots,M\},\mathcal{F}(\mathbf{q}_m)=0,\mathcal{B}_{\omega}(\mathbf{q}_m)=0\}\tag{3}
+            $$
+          </div>
+
+          <p>There are certain functional constraints, such as the boundary conditions of \(\omega\). The physical laws that act as constraints, for instance \(\nabla\cdot\mathbf{u}=0\), are examples of zero locus constraints, in fact all the physical laws can be written as such. As an example, I find it interesting to write the conservation operator, \(\mathcal{F}_{Ideal}(\mathbf{q}_m)\) for ideal gases as:</p>
+
+          <div class="research-note-equation" role="group" aria-label="Ideal-gas relation in vector notation">
+            $$
+            \mathbf{p}_m-\boldsymbol{\rho}_m\odot\mathbf{T}_m R=0
+            $$
+            $$
+            \mathcal{F}_{Ideal}(\mathbf{q}_m)=
+            \begin{bmatrix}p_{1,m}\\\vdots\\p_{N,m}\end{bmatrix}
+            -R\left(\begin{bmatrix}\rho_{1,m}\\\vdots\\\rho_{N,m}\end{bmatrix}
+            \odot
+            \begin{bmatrix}T_{1,m}\\\vdots\\T_{N,m}\end{bmatrix}\right)
+            =\mathbf{0}
+            $$
+          </div>
+
+          <p>since \(\rho,p,T\) cannot vary independently, this is one example of a 3 variables functionally dependent with each other and this cannot vary freely.</p>
+
+          <p>Collecting all temporal states into one 'master' vector, \(\mathbf{Q}\), which I suppose represents the trajectory space of the system, which goes from \(m=1,\ldots,M\), this system of equations sits in the ambient space, \(\mathbb{R}^{6N\times M}\):</p>
+
+          <div class="research-note-equation" role="group" aria-label="Equation 4, trajectory matrix">
+            $$
+            \mathbf{Q}=[\mathbf{q}_1,\mathbf{q}_2,\ldots,\mathbf{q}_M]
+            =\begin{bmatrix}
+            w_{1,1}&w_{1,2}&\cdots&w_{1,M}\\
+            w_{2,1}&w_{2,2}&\cdots&w_{2,M}\\
+            \vdots&\vdots&\ddots&\vdots\\
+            w_{N,1}&w_{N,2}&\cdots&w_{N,M}
+            \end{bmatrix}
+            \in\mathbb{R}^{6N\times M}\tag{4}
+            $$
+          </div>
+
+          <p>The trajectory space, \(\mathcal{M}^{M}\), contains the entire space-time history of the experiment, each element, \(\mathbf{q}_m\) corresponds to a different day, or setup.</p>
+
+          <p>Let the phase space, \(\mathcal{M}=\{\mathbf{q}\in\mathbb{R}^{6N}\mid m\in\{1,\ldots,M\},\mathcal{F}(\mathbf{q})=0,\mathcal{B}_{\omega}(\mathbf{q})=0\}\), denote the set of all physically correct instantaneous states. It is said that for any integrable observable measurement, \(g(\mathbf{q}_m)\), the long-time average along a single trajectory, \(\mathbf{Q}\in\mathbb{R}^{6N\times M}\), is equal to the ensemble average of setup across \(\mathcal{M}\).</p>
+
+          <p>Suppose you run \(K\) separate realisations of the experiment, giving \(K\) trajectory matrices, \(\mathbf{Q}^{(1)},\mathbf{Q}^{(2)},\ldots,\mathbf{Q}^{(K)}\in\mathcal{M}^{M}\). If our observable signal is stationary, then the expected values are invariant across column index \(m\), \(\mathbb{E}(g(\mathbf{q}_m))=\mathbb{E}(g(\mathbf{q}_{m+1}))\). We need only to consider the ensemble average at a single column, say, \(\mathbf{q}_1\), reducing the Expectation from a space-time integral over \(\mathcal{M}^{M}\) to a single state-space integral across \(\mathcal{M}\).</p>
+
+          <p>As a result of this, the group of realisations we consider occupy the phase space submanifold, \(\mathcal{M}\). Under ergodicity, the ensemble average of the initial state column vector, \(\mathbf{q}_1\), across all realisations \(\mathbf{Q}^{(k)}\) in \(\mathcal{M}\), is equal to the long-time average along a single trajectory path across the columns of a single matrix, \(\mathbf{Q}\), occupying \(\mathbb{R}^{6N}\).</p>
+
+          <p>However, because the zero-locus constraints of fluid dynamics, \(\mathcal{F}(\mathbf{q})=\mathbf{0}\), are in part non-linear, \(\mathcal{M}\) can split into disconnected regions separated by an uncrossable boundary. If this occurs, a single trajectory cannot explore the entire submanifold in a single realisation, and the two averages can no longer be equated. Thus it is wise not to be trapped in a single flow state but to repeat multiple realisations across different starting configurations to build a true ensemble and to change how you approach your testing conditions to avoid hysteresis.</p>
+        </article>
+      </section>
+
       <section id="page-et-about" class="page">
         <div class="breadcrumb"><a href="#contact" onclick="showPage('contact'); return false;">Hamza H</a> &gt; EasyTunnel &gt; About</div>
         <h2>About EasyTunnel</h2>
@@ -1439,6 +1608,13 @@ lu = splu(A_csr)          # factorised once, before the time loop</code></pre>
         <div class="breadcrumb"><a href="#overview" onclick="showPage('overview'); return false;">Main</a> &gt; Blog</div>
         <h2>Blog</h2>
         <p class="note">Short development notes, solver progress, mistakes, fixes, and things I learned.</p>
+
+        <div class="blog-post">
+          <h3><a href="#fluid-state-space" onclick="showPage('fluid-state-space'); return false;">State-Space Representation of Fluid Flows</a></h3>
+          <div class="blog-date">Research notes · Hamza Hussain</div>
+          <p><a href="#fluid-state-space" onclick="showPage('fluid-state-space'); return false;">Read the full research note</a></p>
+        </div>
+        <hr class="divider">
 
         <!-- BLOG POST TEMPLATE
         <div class="blog-post">
